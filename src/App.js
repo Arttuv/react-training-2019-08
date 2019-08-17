@@ -4,12 +4,22 @@ import Gallery from "react-photo-gallery";
 import Carousel, { Modal, ModalGateway } from "react-images";
 import './App.css';
 import { photos } from "./photos";
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
 function App() {
+  return (
+    <Router>
+      <Route path="/" render ={(props)=> <GlorifiedGallery {...props} photoURL={'https://jsonplaceholder.typicode.com/photos/'} />} />
+    </Router>
+    );
+}
+
+function GlorifiedGallery(props) {
   const [currentImage, setCurrentImage] = useState(0);
   const [viewerIsOpen, setViewerIsOpen] = useState(false);
   const [fetchedPhotos, setFetchedPhotos] = useState(photos);
   const [pagination, setPagination] = useState(null);
+  const[ page, setPage] = useState(1);
 
   const openLightbox = useCallback((event, { photo, index }) => {
     setCurrentImage(index);
@@ -21,12 +31,22 @@ function App() {
     setViewerIsOpen(false);
   };
 
+  const nextPage = () => {
+    setPage(page + 1);
+  }
+
+  const previousPage = () => {
+    setPage(page - 1);
+  }
+
+  /**
+   * useEffect-hook for background data fetch.
+   */
   useEffect(() => {
    const fetchPhotos = async() => {
-    fetch('https://jsonplaceholder.typicode.com/photos/?_page=1&limit=10')
+    fetch(props.photoURL + '?_page=' + page + '&limit=10')
     .then(response => {
       var parse = require('parse-link-header');
-      
       var links = parse(response.headers.get('Link'));
       console.log(typeof(links));
       console.log(links);
@@ -50,7 +70,7 @@ function App() {
 
   fetchPhotos();
 
-  }, []);
+  }, [page]);
 
   return (
     <div>
@@ -70,14 +90,10 @@ function App() {
         ) : null}
       </ModalGateway>
       
-      <SimplePagination pagination={pagination} />
+      <SimplePagination pagination={pagination} nextPage={nextPage} previousPage={previousPage} />
 
     </div>
   );
-}
-
-function GlorifiedGallery(props) {
-
 }
 
 function SimplePagination(props) {
@@ -85,16 +101,16 @@ function SimplePagination(props) {
     <nav>
       {props.pagination != null ?
         <ul className="pagination justify-content-center">
-          {props.pagination.hasOwnProperty('previous') ? 
-              <li className="page-item"><a className="page-link" href={props.pagination['previous'].url} tabIndex="-1">Previous</a></li> :
+          {props.pagination.hasOwnProperty('prev') ? 
+              <li className="page-item"><a className="page-link" onClick={props.previousPage} tabIndex="-1">Previous</a></li> :
               <li className="page-item disabled"><a className="page-link" href="#" tabIndex="-1">Previous</a></li>
           }
           <li className="page-item"><a className="page-link" href="#">1</a></li>
           <li className="page-item"><a className="page-link" href="#">2</a></li>
           <li className="page-item"><a className="page-link" href="#">3</a></li>
           {props.pagination.hasOwnProperty('next') ? 
-              <li className="page-item"><a className="page-link" href={props.pagination['next'].url} tabIndex="-1">Next</a></li> :
-              <li className="page-item disabled"><a className="page-link" href="#" tabIndex="-1">Next</a></li>
+              <li className="page-item"><a className="page-link" onClick={props.nextPage} tabIndex="-1">Next</a></li> :
+              <li className="page-item disabled"><a className="page-link" tabIndex="-1">Next</a></li>
           }
         </ul>
         : null}
