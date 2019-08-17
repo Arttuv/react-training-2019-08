@@ -2,7 +2,7 @@
   "name": "photo-browser",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://github.com/Arttuv/react-training-2019-08",
+  "homepage": "http://arttuv.github.io/react-training-2019-08",
   "dependencies": {
     "bootstrap": "^4.3.1",
     "gh-pages": "^2.1.1",
