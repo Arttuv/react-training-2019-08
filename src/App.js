@@ -4,6 +4,8 @@ import Gallery from "react-photo-gallery";
 import Carousel, { Modal, ModalGateway } from "react-images";
 import './App.css';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import {FaShareSquare} from "react-icons/fa";
+import {FaAngleDoubleDown} from "react-icons/fa";
 
 function App() {
   return (
@@ -11,6 +13,27 @@ function App() {
       <Route path="/" render ={(props)=> <GlorifiedGallery {...props} photoURL={'https://jsonplaceholder.typicode.com/photos/'} />} />
     </Router>
     );
+}
+
+const CustomFooter = ({ innerProps, isModal }) => isModal ? (
+  <div className="container-fluid w-100 d-flex justify-content-center text-center">
+    <button type="button" className="btn btn btn-outline-primary align-middle" onClick={() => window.open('http://www.google.fi')}>
+      <FaShareSquare />
+    </button>
+  </div>
+) : null;
+
+const NewCustomFooter = ({ currentView, modalProps }) => {
+
+  return (
+    <div className="container-fluid w-100 d-flex justify-content-center text-center">
+      <button type="button" className="btn btn btn-outline-primary align-middle" onClick={() => {
+        console.log(currentView);
+        console.log(modalProps);
+        window.open(currentView.src)}}>
+        <FaShareSquare />
+      </button>
+    </div>);
 }
 
 function GlorifiedGallery(props) {
@@ -88,6 +111,7 @@ function GlorifiedGallery(props) {
         {viewerIsOpen ? (
           <Modal onClose={closeLightbox}>
             <Carousel
+              components={{Footer: NewCustomFooter}}
               currentIndex={currentImage}
               views={fetchedPhotos.map(x => ({
                 ...x,
@@ -114,11 +138,11 @@ function SimplePagination(props) {
           
           {props.pagination.hasOwnProperty('next') ? 
             <button type="button" className="btn btn btn-outline-primary align-middle" onClick={props.nextPage}>
-              <img src="./arrow_down.png"/>
+              <FaAngleDoubleDown />
             </button>
             :
             <button type="button" className="btn btn btn-outline-primary disabled">
-              <img src="./arrow_down.png"/>
+              <FaAngleDoubleDown />
             </button>}
         </div>
 
