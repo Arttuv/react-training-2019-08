@@ -15,18 +15,11 @@ function App() {
     );
 }
 
-const CustomFooter = ({ innerProps, isModal }) => isModal ? (
-  <div className="container-fluid w-100 d-flex justify-content-center text-center">
-    <button type="button" className="btn btn btn-outline-primary align-middle" onClick={() => window.open('http://www.google.fi')}>
-      <FaShareSquare />
-    </button>
-  </div>
-) : null;
-
 const NewCustomFooter = ({ currentView, modalProps }) => {
 
   return (
     <div className="container-fluid w-100 d-flex justify-content-center text-center">
+      <span className="text-light">{currentView.title}</span>
       <button type="button" className="btn btn btn-outline-primary align-middle" onClick={() => {
         console.log(currentView);
         console.log(modalProps);
@@ -84,6 +77,7 @@ function GlorifiedGallery(props) {
           var size = getRandomInt(3) + 1;
           newObject['width'] = size;
           newObject['height'] = size;
+          newObject['title'] = item.title;
           return newObject;
         });
         console.log(data);
