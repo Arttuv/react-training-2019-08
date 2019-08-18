@@ -10,7 +10,7 @@ import {FaAngleDoubleDown} from "react-icons/fa";
 function App() {
   return (
     <Router>
-      <Route exact path="/" render ={(props)=> <GlorifiedGallery {...props} photoURL={'https://jsonplaceholder.typicode.com/photos/'} />} />
+      <Route path="/" render ={(props)=> <GlorifiedGallery {...props} photoURL={'https://jsonplaceholder.typicode.com/photos/'} />} />
       <Route path="/photo" component={GlorifiedPhoto}/>
 
     </Router>
