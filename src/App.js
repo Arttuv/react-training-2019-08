@@ -3,7 +3,6 @@ import { render } from "react-dom";
 import Gallery from "react-photo-gallery";
 import Carousel, { Modal, ModalGateway } from "react-images";
 import './App.css';
-import { photos } from "./photos";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
 function App() {
@@ -17,7 +16,7 @@ function App() {
 function GlorifiedGallery(props) {
   const [currentImage, setCurrentImage] = useState(0);
   const [viewerIsOpen, setViewerIsOpen] = useState(false);
-  const [fetchedPhotos, setFetchedPhotos] = useState(photos);
+  const [fetchedPhotos, setFetchedPhotos] = useState(null);
   const [pagination, setPagination] = useState(null);
   const[ page, setPage] = useState(1);
 
@@ -39,18 +38,19 @@ function GlorifiedGallery(props) {
     setPage(page - 1);
   }
 
+  function getRandomInt(max) {
+    return Math.floor(Math.random() * Math.floor(max));
+  }
+  
   /**
    * useEffect-hook for background data fetch.
    */
   useEffect(() => {
    const fetchPhotos = async() => {
-    fetch(props.photoURL + '?_page=' + page + '&limit=10')
+    fetch(props.photoURL + '?_page=' + page + '&limit=12')
     .then(response => {
       var parse = require('parse-link-header');
       var links = parse(response.headers.get('Link'));
-      console.log(typeof(links));
-      console.log(links);
-      console.log(links['next']);
       setPagination(links);
       return response.json();
     })
@@ -58,13 +58,20 @@ function GlorifiedGallery(props) {
         var converted = data.map(item => {
           var newObject = {};
           newObject['src'] = item.url;
-          newObject['width'] = 1;
-          newObject['height'] = 1;
+          var size = getRandomInt(3) + 1;
+          newObject['width'] = size;
+          newObject['height'] = size;
           return newObject;
         });
         console.log(data);
         console.log(converted);
-        setFetchedPhotos(converted);
+        //(fetchedPhotos == null) ? setFetchedPhotos(converted) : setFetchedPhotos(fetchedPhotos.push(converted));
+        if(fetchedPhotos == null) {
+          setFetchedPhotos(converted);
+        } else {
+          setFetchedPhotos(fetchedPhotos.concat(converted));
+        }
+        //setFetchedPhotos(fetchPhotos);
     })
   };
 
@@ -74,7 +81,9 @@ function GlorifiedGallery(props) {
 
   return (
     <div>
+      {fetchedPhotos != null ? (
       <Gallery photos={fetchedPhotos} onClick={openLightbox} />
+      ) : null}
       <ModalGateway>
         {viewerIsOpen ? (
           <Modal onClose={closeLightbox}>
@@ -100,7 +109,20 @@ function SimplePagination(props) {
   return (  
     <nav>
       {props.pagination != null ?
-        <ul className="pagination justify-content-center">
+
+        <div className="container-fluid w-100 d-flex justify-content-center">
+          
+          {props.pagination.hasOwnProperty('next') ? 
+            <button type="button" className="btn btn btn-outline-primary align-middle" onClick={props.nextPage}>
+              <img src="./arrow_down.png"/>
+            </button>
+            :
+            <button type="button" className="btn btn btn-outline-primary disabled">
+              <img src="./arrow_down.png"/>
+            </button>}
+        </div>
+
+        /*<ul className="pagination justify-content-center">
           {props.pagination.hasOwnProperty('prev') ? 
               <li className="page-item"><a className="page-link" onClick={props.previousPage} tabIndex="-1">Previous</a></li> :
               <li className="page-item disabled"><a className="page-link" href="#" tabIndex="-1">Previous</a></li>
@@ -112,7 +134,7 @@ function SimplePagination(props) {
               <li className="page-item"><a className="page-link" onClick={props.nextPage} tabIndex="-1">Next</a></li> :
               <li className="page-item disabled"><a className="page-link" tabIndex="-1">Next</a></li>
           }
-        </ul>
+        </ul>*/
         : null}
       </nav>
   );
