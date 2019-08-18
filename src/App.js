@@ -10,9 +10,50 @@ import {FaAngleDoubleDown} from "react-icons/fa";
 function App() {
   return (
     <Router>
-      <Route path="/" render ={(props)=> <GlorifiedGallery {...props} photoURL={'https://jsonplaceholder.typicode.com/photos/'} />} />
+      <Route exact path="/" render ={(props)=> <GlorifiedGallery {...props} photoURL={'https://jsonplaceholder.typicode.com/photos/'} />} />
+      <Route path="/photo" component={GlorifiedPhoto}/>
+
     </Router>
     );
+}
+
+function GlorifiedPhoto(props) {
+
+  const [photoDetails, setPhotoDetails] = useState(null);
+  /**
+   * useEffect-hook for background data fetch.
+   */
+  console.log(props);
+  useEffect(() => {
+    const getPhotoInfo = async() => {
+      const searchParams = new URLSearchParams(window.location.search);
+     fetch('https://jsonplaceholder.typicode.com/photos/' + searchParams.get('id'))
+     .then(response => {
+       return response.json();
+     })
+     .then((data) => { 
+        console.log(data);
+        var newObject = {};
+        newObject['id'] = data['id'];
+        newObject['url'] = data['url'];
+        newObject['title'] = data['title'];
+        setPhotoDetails(newObject);
+     })
+   };
+
+   getPhotoInfo();
+
+  }, []);
+ 
+  return (
+    <div>
+      <h1>Photo Details</h1>
+      {photoDetails != null ? (
+      <h1>{photoDetails.id}</h1>
+      ) : null}
+    </div>
+
+  );
 }
 
 const NewCustomFooter = ({ currentView, modalProps }) => {
@@ -26,6 +67,15 @@ const NewCustomFooter = ({ currentView, modalProps }) => {
         window.open(currentView.src)}}>
         <FaShareSquare />
       </button>
+      <Link to={{
+        pathname: '/photo',
+        state: {
+          id: currentView.id
+        }
+      }}>Details</Link>
+      <button type="button" onClick={() => {
+        window.open("/photo?id=" + currentView.id);
+      }}>Another details</button>
     </div>);
 }
 
@@ -78,6 +128,8 @@ function GlorifiedGallery(props) {
           newObject['width'] = size;
           newObject['height'] = size;
           newObject['title'] = item.title;
+          newObject['id'] = item.id;
+          newObject['albumId'] = item.albumId;
           return newObject;
         });
         console.log(data);
@@ -139,20 +191,6 @@ function SimplePagination(props) {
               <FaAngleDoubleDown />
             </button>}
         </div>
-
-        /*<ul className="pagination justify-content-center">
-          {props.pagination.hasOwnProperty('prev') ? 
-              <li className="page-item"><a className="page-link" onClick={props.previousPage} tabIndex="-1">Previous</a></li> :
-              <li className="page-item disabled"><a className="page-link" href="#" tabIndex="-1">Previous</a></li>
-          }
-          <li className="page-item"><a className="page-link" href="#">1</a></li>
-          <li className="page-item"><a className="page-link" href="#">2</a></li>
-          <li className="page-item"><a className="page-link" href="#">3</a></li>
-          {props.pagination.hasOwnProperty('next') ? 
-              <li className="page-item"><a className="page-link" onClick={props.nextPage} tabIndex="-1">Next</a></li> :
-              <li className="page-item disabled"><a className="page-link" tabIndex="-1">Next</a></li>
-          }
-        </ul>*/
         : null}
       </nav>
   );
