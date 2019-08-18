@@ -129,7 +129,7 @@ function GlorifiedGallery(props) {
           newObject['height'] = size;
           newObject['title'] = item.title;
           newObject['id'] = item.id;
-          newObject['albumId'] = item.albumId;
+          newObject['albumid'] = item.albumid;
           return newObject;
         });
         console.log(data);
