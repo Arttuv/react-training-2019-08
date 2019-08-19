@@ -3,31 +3,39 @@ import { render } from "react-dom";
 import Gallery from "react-photo-gallery";
 import Carousel, { Modal, ModalGateway } from "react-images";
 import './App.css';
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { BrowserRouter, HashRouter, Switch, Route, Link } from "react-router-dom";
 import {FaShareSquare} from "react-icons/fa";
 import {FaAngleDoubleDown} from "react-icons/fa";
 
 function App() {
   return (
-    <Router>
-      <Route path="/" render ={(props)=> <GlorifiedGallery {...props} photoURL={'https://jsonplaceholder.typicode.com/photos/'} />} />
-      <Route path="/photo" component={GlorifiedPhoto}/>
-
-    </Router>
+    <HashRouter basename="/">
+      <Switch >
+        <Route exact path="/" component={GlorifiedGallery} />
+        <Route path="/photo/:id" component={GlorifiedPhoto}/>
+      </Switch>
+    </HashRouter>
     );
 }
 
 function GlorifiedPhoto(props) {
 
+  const [id, setId] = useState(null);
+  const [url, setUrl] = useState(null);
+  const [title, setTitle] = useState(null);
+
   const [photoDetails, setPhotoDetails] = useState(null);
+  
   /**
    * useEffect-hook for background data fetch.
    */
+  console.log("Glorified photo");
   console.log(props);
   useEffect(() => {
     const getPhotoInfo = async() => {
       const searchParams = new URLSearchParams(window.location.search);
-     fetch('https://jsonplaceholder.typicode.com/photos/' + searchParams.get('id'))
+     //fetch('https://jsonplaceholder.typicode.com/photo/' + searchParams.get('id'))
+     fetch('https://jsonplaceholder.typicode.com/photos/' + props.match.params.id)
      .then(response => {
        return response.json();
      })
@@ -38,6 +46,9 @@ function GlorifiedPhoto(props) {
         newObject['url'] = data['url'];
         newObject['title'] = data['title'];
         setPhotoDetails(newObject);
+        setId(newObject.id);
+        setUrl(newObject.url);
+        setTitle(newObject.title);
      })
    };
 
@@ -67,15 +78,17 @@ const NewCustomFooter = ({ currentView, modalProps }) => {
         window.open(currentView.src)}}>
         <FaShareSquare />
       </button>
+      
       <Link to={{
         pathname: '/photo',
         state: {
           id: currentView.id
         }
-      }}>Details</Link>
-      <button type="button" onClick={() => {
-        window.open("/photo?id=" + currentView.id);
-      }}>Another details</button>
+      }}>Details 1</Link>
+      
+      <Link to="/photo" params={{id: currentView.id}}>Details 2</Link>
+      <Link to={"/photo/" + currentView.id}>Details 3</Link>
+
     </div>);
 }
 
@@ -113,7 +126,7 @@ function GlorifiedGallery(props) {
    */
   useEffect(() => {
    const fetchPhotos = async() => {
-    fetch(props.photoURL + '?_page=' + page + '&limit=12')
+    fetch('https://jsonplaceholder.typicode.com/photos/' + '?_page=' + page + '&limit=12')
     .then(response => {
       var parse = require('parse-link-header');
       var links = parse(response.headers.get('Link'));
