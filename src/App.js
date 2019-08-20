@@ -1,10 +1,11 @@
 import React, {useState, useCallback, useEffect} from 'react';
-import { render } from "react-dom";
 import Gallery from "react-photo-gallery";
 import Carousel, { Modal, ModalGateway } from "react-images";
 import './App.css';
-import { BrowserRouter, HashRouter, Switch, Route, Link } from "react-router-dom";
-import {FaAngleDoubleDown, FaLink, FaShareSquare, FaInfo} from "react-icons/fa";
+import { HashRouter, Switch, Route, Link } from "react-router-dom";
+import {FaAngleDoubleDown, FaShareSquare, FaInfo} from "react-icons/fa";
+
+const responseLinkParse = require('parse-link-header');
 
 function App() {
   return (
@@ -20,17 +21,15 @@ function App() {
 function TopNavbar(props) {
   
   return (
-    <nav className="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+    <nav className="navbar navbar-expand navbar-dark fixed-top bg-dark">
     <a className="navbar-brand" href="#">PhotoApp</a>
-      <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-        <span className="navbar-toggler-icon"></span>
-      </button>
-      <div className="collapse navbar-collapse" id="navbarCollapse">
+      
+      <div>
 
       {(props.activePage) ? 
-      <ul className="navbar-nav mr-auto">
+      <ul className="navbar-nav">
           
-          {props.activePage=='photos' ? 
+          {props.activePage==='photos' ? 
             <li className="nav-item active">
                 <a className="nav-link" href="#">Photos <span className="sr-only">(current)</span></a>
             </li>
@@ -40,7 +39,7 @@ function TopNavbar(props) {
             </li>
           }
           
-          {props.activePage=='photo' ? 
+          {props.activePage==='photo' ? 
             <li className="nav-item active">
                 <a className="nav-link" href="#">Photo Details<span className="sr-only">(current)</span></a>
             </li>
@@ -54,19 +53,11 @@ function TopNavbar(props) {
 }
 
 function GlorifiedPhoto(props) {
-
-  const [id, setId] = useState(null);
-  const [url, setUrl] = useState(null);
-  const [title, setTitle] = useState(null);
-
   const [photoDetails, setPhotoDetails] = useState(null);
   
   /**
    * useEffect-hook for background data fetch.
    */
-  console.log("Glorified photo");
-  console.log(props);
-  
   useEffect(() => {
     const getPhotoInfo = async() => {
      fetch('https://jsonplaceholder.typicode.com/photos/' + props.match.params.id)
@@ -74,22 +65,18 @@ function GlorifiedPhoto(props) {
        return response.json();
      })
      .then((data) => { 
-        console.log(data);
         var newObject = {};
-        newObject['id'] = data['id'];
-        newObject['url'] = data['url'];
-        newObject['title'] = data['title'];
+        newObject.id = data['id'];
+        newObject.url = data['url'];
+        newObject.title = data['title'];
         setPhotoDetails(newObject);
-        setId(newObject.id);
-        setUrl(newObject.url);
-        setTitle(newObject.title);
-        
      })
+     .catch(error => console.error('Error:', error));
    };
 
    getPhotoInfo();
 
-  }, []);
+  }, [setPhotoDetails, props.match.params.id]);
  
   return (
       <div>
@@ -97,7 +84,7 @@ function GlorifiedPhoto(props) {
         
         {photoDetails != null ? (
 
-          <main role="main" className="container h100">
+          <main role="main" className="container photo-details">
             <div className="card mb-3">
               <div className="row no-gutters">
                 <div className="col-md-8">
@@ -116,7 +103,7 @@ function GlorifiedPhoto(props) {
 
           </main>
 
-        ) : null}
+        ) : <h1>Loading...</h1>}
       </div>
   );
 }
@@ -127,8 +114,6 @@ const NewCustomFooter = ({ currentView, modalProps }) => {
     <div className="container-fluid w-100 d-flex justify-content-center text-center">
     
       <button type="button" className="btn btn btn-outline-primary align-middle" onClick={() => {
-        console.log(currentView);
-        console.log(modalProps);
         window.open(currentView.src)}}>
         <FaShareSquare />
       </button>
@@ -144,7 +129,8 @@ function GlorifiedGallery(props) {
   const [viewerIsOpen, setViewerIsOpen] = useState(false);
   const [fetchedPhotos, setFetchedPhotos] = useState(null);
   const [pagination, setPagination] = useState(null);
-  const[ page, setPage] = useState(1);
+  const [page, setPage] = useState(1);
+  const [fetchingData, setFetchingData] = useState(false);
 
   const openLightbox = useCallback((event, { photo, index }) => {
     setCurrentImage(index);
@@ -173,10 +159,11 @@ function GlorifiedGallery(props) {
    */
   useEffect(() => {
    const fetchPhotos = async() => {
+    setFetchingData(true);
     fetch('https://jsonplaceholder.typicode.com/photos/' + '?_page=' + page + '&limit=12')
     .then(response => {
-      var parse = require('parse-link-header');
-      var links = parse(response.headers.get('Link'));
+      
+      var links = responseLinkParse(response.headers.get('Link'));
       setPagination(links);
       return response.json();
     })
@@ -184,37 +171,36 @@ function GlorifiedGallery(props) {
         var converted = data.map(item => {
           var newObject = {};
           newObject['src'] = item.url;
-          var size = getRandomInt(3) + 1;
-          newObject['width'] = size;
-          newObject['height'] = size;
-          newObject['title'] = item.title;
-          newObject['id'] = item.id;
-          newObject['albumid'] = item.albumid;
+          var width = getRandomInt(1) + 1;
+          var height = getRandomInt(1) + 1;
+
+          newObject.width = width;
+          newObject.height = height;
+          newObject.title = item.title;
+          newObject.id = item.id;
+          newObject.albumid = item.albumid;
           return newObject;
         });
-        console.log(data);
-        console.log(converted);
-        //(fetchedPhotos == null) ? setFetchedPhotos(converted) : setFetchedPhotos(fetchedPhotos.push(converted));
-        if(fetchedPhotos == null) {
-          setFetchedPhotos(converted);
-        } else {
+
+        if(fetchedPhotos) {
           setFetchedPhotos(fetchedPhotos.concat(converted));
+        } else {
+          setFetchedPhotos(converted);
         }
-        //setFetchedPhotos(fetchPhotos);
+        setFetchingData(false);
     })
+    .catch(error => console.error('Error:', error));
   };
 
   fetchPhotos();
 
-  }, [page]);
+  }, [page, setFetchedPhotos]);
 
   return (
     <div>
       <TopNavbar activePage='photos'/>
       <main role="main" className="container">
-        {fetchedPhotos != null ? (
-        <Gallery photos={fetchedPhotos} onClick={openLightbox} />
-        ) : null}
+        {fetchedPhotos != null ? <Gallery photos={fetchedPhotos} direction={"row"} onClick={openLightbox} /> : <h1>Loading...</h1>}
         <ModalGateway>
           {viewerIsOpen ? (
             <Modal onClose={closeLightbox}>
@@ -230,7 +216,7 @@ function GlorifiedGallery(props) {
             </Modal>
           ) : null}
         </ModalGateway>
-        <SimplePagination pagination={pagination} nextPage={nextPage} previousPage={previousPage} />
+        {!fetchingData ? <SimplePagination pagination={pagination} nextPage={nextPage} previousPage={previousPage} /> : null }
       </main>
     </div>
   );
@@ -255,10 +241,6 @@ function SimplePagination(props) {
         : null}
       </nav>
   );
-}
-
-function PaginationNext(props) {
-
 }
 
 export default App;

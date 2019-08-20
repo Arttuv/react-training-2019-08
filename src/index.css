@@ -1,12 +1,12 @@
 body {
-  /*margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;*/
-  
-  /*min-height: 75rem;*/
   padding-top: 4.5rem;
+  margin: 0;
   background-color: black;
+  height: 100%;
+  width: 100%;
+}
+
+.photo-details {
+  max-height: 90vh;
+  max-width: 1000px; /* TODO: Fix responsive photo view. */
 }
