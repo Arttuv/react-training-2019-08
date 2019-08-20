@@ -1,9 +1,9 @@
 import React, {useState, useCallback, useEffect} from 'react';
 import Gallery from "react-photo-gallery";
 import Carousel, { Modal, ModalGateway } from "react-images";
-import './App.css';
 import { HashRouter, Switch, Route, Link } from "react-router-dom";
 import {FaAngleDoubleDown, FaShareSquare, FaInfo} from "react-icons/fa";
+import './App.css';
 
 const responseLinkParse = require('parse-link-header');
 
@@ -18,6 +18,11 @@ function App() {
     );
 }
 
+/**
+ * Shows breadcrumb-style navigation.
+ * 
+ * @param {activePage} props 
+ */
 function TopNavbar(props) {
   
   return (
@@ -52,6 +57,11 @@ function TopNavbar(props) {
   );
 }
 
+/**
+ * Component to show a single photo with detailed info. Should get the 
+ * id of the photo as a parameter.
+ * @param {props.mathc.params.id} props 
+ */
 function GlorifiedPhoto(props) {
   const [photoDetails, setPhotoDetails] = useState(null);
   
@@ -108,7 +118,12 @@ function GlorifiedPhoto(props) {
   );
 }
 
-const NewCustomFooter = ({ currentView, modalProps }) => {
+/**
+ * Footer to be used in lightbox view.
+ * 
+ * @param {currentView, } param0 
+ */
+const LightboxFooter = ({ currentView, modalProps }) => {
 
   return (
     <div className="container-fluid w-100 d-flex justify-content-center text-center">
@@ -124,6 +139,11 @@ const NewCustomFooter = ({ currentView, modalProps }) => {
     </div>);
 }
 
+/**
+ * Gallery view.
+ * 
+ * @param {} props 
+ */
 function GlorifiedGallery(props) {
   const [currentImage, setCurrentImage] = useState(0);
   const [viewerIsOpen, setViewerIsOpen] = useState(false);
@@ -205,7 +225,7 @@ function GlorifiedGallery(props) {
           {viewerIsOpen ? (
             <Modal onClose={closeLightbox}>
               <Carousel
-                components={{Footer: NewCustomFooter}}
+                components={{Footer: LightboxFooter}}
                 currentIndex={currentImage}
                 views={fetchedPhotos.map(x => ({
                   ...x,
@@ -222,6 +242,13 @@ function GlorifiedGallery(props) {
   );
 }
 
+/**
+ * Simple pagination to be used to fetch new photos.
+ * 
+ * Must be given a function which does the fetching.
+ * 
+ * @param {props.nextPage} props 
+ */
 function SimplePagination(props) {
   return (  
     <nav>
