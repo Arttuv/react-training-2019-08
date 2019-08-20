@@ -4,8 +4,7 @@ import Gallery from "react-photo-gallery";
 import Carousel, { Modal, ModalGateway } from "react-images";
 import './App.css';
 import { BrowserRouter, HashRouter, Switch, Route, Link } from "react-router-dom";
-import {FaShareSquare} from "react-icons/fa";
-import {FaAngleDoubleDown} from "react-icons/fa";
+import {FaAngleDoubleDown, FaLink, FaShareSquare, FaInfo} from "react-icons/fa";
 
 function App() {
   return (
@@ -16,6 +15,42 @@ function App() {
       </Switch>
     </HashRouter>
     );
+}
+
+function TopNavbar(props) {
+  
+  return (
+    <nav className="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+    <a className="navbar-brand" href="#">PhotoApp</a>
+      <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span className="navbar-toggler-icon"></span>
+      </button>
+      <div className="collapse navbar-collapse" id="navbarCollapse">
+
+      {(props.activePage) ? 
+      <ul className="navbar-nav mr-auto">
+          
+          {props.activePage=='photos' ? 
+            <li className="nav-item active">
+                <a className="nav-link" href="#">Photos <span className="sr-only">(current)</span></a>
+            </li>
+          : 
+          <li className="nav-item">
+                <a className="nav-link" href="#">Photos <span className="sr-only">(current)</span></a>
+            </li>
+          }
+          
+          {props.activePage=='photo' ? 
+            <li className="nav-item active">
+                <a className="nav-link" href="#">Photo Details<span className="sr-only">(current)</span></a>
+            </li>
+          : null}
+        </ul>
+       : null}
+
+      </div>  
+    </nav>
+  );
 }
 
 function GlorifiedPhoto(props) {
@@ -31,10 +66,9 @@ function GlorifiedPhoto(props) {
    */
   console.log("Glorified photo");
   console.log(props);
+  
   useEffect(() => {
     const getPhotoInfo = async() => {
-      const searchParams = new URLSearchParams(window.location.search);
-     //fetch('https://jsonplaceholder.typicode.com/photo/' + searchParams.get('id'))
      fetch('https://jsonplaceholder.typicode.com/photos/' + props.match.params.id)
      .then(response => {
        return response.json();
@@ -49,6 +83,7 @@ function GlorifiedPhoto(props) {
         setId(newObject.id);
         setUrl(newObject.url);
         setTitle(newObject.title);
+        
      })
    };
 
@@ -57,13 +92,32 @@ function GlorifiedPhoto(props) {
   }, []);
  
   return (
-    <div>
-      <h1>Photo Details</h1>
-      {photoDetails != null ? (
-      <h1>{photoDetails.id}</h1>
-      ) : null}
-    </div>
+      <div>
+        <TopNavbar activePage="photo"/>
+        
+        {photoDetails != null ? (
 
+          <main role="main" className="container h100">
+            <div className="card mb-3">
+              <div className="row no-gutters">
+                <div className="col-md-8">
+                  <img src={photoDetails.url} className="card-img" alt={photoDetails.title} />
+                </div>
+                <div className="col-md-4">
+                  <div className="card-body">
+                    <h5 className="card-title">{photoDetails.title}</h5>
+                    <p className="card-text">Link to <a href={photoDetails.url}>original</a></p>
+                    <p className="card-text">Link to <a href={window.location.href}>details view</a></p>
+                    <p className="card-text"><small className="text-muted">Photo-id: {photoDetails.id}</small></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </main>
+
+        ) : null}
+      </div>
   );
 }
 
@@ -71,23 +125,16 @@ const NewCustomFooter = ({ currentView, modalProps }) => {
 
   return (
     <div className="container-fluid w-100 d-flex justify-content-center text-center">
-      <span className="text-light">{currentView.title}</span>
+    
       <button type="button" className="btn btn btn-outline-primary align-middle" onClick={() => {
         console.log(currentView);
         console.log(modalProps);
         window.open(currentView.src)}}>
         <FaShareSquare />
       </button>
-      
-      <Link to={{
-        pathname: '/photo',
-        state: {
-          id: currentView.id
-        }
-      }}>Details 1</Link>
-      
-      <Link to="/photo" params={{id: currentView.id}}>Details 2</Link>
-      <Link to={"/photo/" + currentView.id}>Details 3</Link>
+     
+
+      <Link to={"/photo/" + currentView.id} className="btn btn-outline-primary"><FaInfo/></Link>
 
     </div>);
 }
@@ -163,27 +210,28 @@ function GlorifiedGallery(props) {
 
   return (
     <div>
-      {fetchedPhotos != null ? (
-      <Gallery photos={fetchedPhotos} onClick={openLightbox} />
-      ) : null}
-      <ModalGateway>
-        {viewerIsOpen ? (
-          <Modal onClose={closeLightbox}>
-            <Carousel
-              components={{Footer: NewCustomFooter}}
-              currentIndex={currentImage}
-              views={fetchedPhotos.map(x => ({
-                ...x,
-                srcset: x.srcSet,
-                caption: x.title
-              }))}
-            />
-          </Modal>
+      <TopNavbar activePage='photos'/>
+      <main role="main" className="container">
+        {fetchedPhotos != null ? (
+        <Gallery photos={fetchedPhotos} onClick={openLightbox} />
         ) : null}
-      </ModalGateway>
-      
-      <SimplePagination pagination={pagination} nextPage={nextPage} previousPage={previousPage} />
-
+        <ModalGateway>
+          {viewerIsOpen ? (
+            <Modal onClose={closeLightbox}>
+              <Carousel
+                components={{Footer: NewCustomFooter}}
+                currentIndex={currentImage}
+                views={fetchedPhotos.map(x => ({
+                  ...x,
+                  srcset: x.srcSet,
+                  caption: x.title
+                }))}
+              />
+            </Modal>
+          ) : null}
+        </ModalGateway>
+        <SimplePagination pagination={pagination} nextPage={nextPage} previousPage={previousPage} />
+      </main>
     </div>
   );
 }
