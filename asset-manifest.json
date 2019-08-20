@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.css": "/react-training-2019-08/static/css/main.4826d561.chunk.css",
-    "main.js": "/react-training-2019-08/static/js/main.edf877a5.chunk.js",
-    "main.js.map": "/react-training-2019-08/static/js/main.edf877a5.chunk.js.map",
+    "main.css": "/react-training-2019-08/static/css/main.3f85cf3e.chunk.css",
+    "main.js": "/react-training-2019-08/static/js/main.edc48829.chunk.js",
+    "main.js.map": "/react-training-2019-08/static/js/main.edc48829.chunk.js.map",
     "runtime~main.js": "/react-training-2019-08/static/js/runtime~main.5e6940ff.js",
     "runtime~main.js.map": "/react-training-2019-08/static/js/runtime~main.5e6940ff.js.map",
     "static/css/2.22a7d4ef.chunk.css": "/react-training-2019-08/static/css/2.22a7d4ef.chunk.css",
     "static/js/2.4ce8f8d4.chunk.js": "/react-training-2019-08/static/js/2.4ce8f8d4.chunk.js",
     "static/js/2.4ce8f8d4.chunk.js.map": "/react-training-2019-08/static/js/2.4ce8f8d4.chunk.js.map",
     "index.html": "/react-training-2019-08/index.html",
-    "precache-manifest.637ea6be1a00982413f9f07b69099e22.js": "/react-training-2019-08/precache-manifest.637ea6be1a00982413f9f07b69099e22.js",
+    "precache-manifest.0e29fdf0cf9f285117e2aa64aafe8317.js": "/react-training-2019-08/precache-manifest.0e29fdf0cf9f285117e2aa64aafe8317.js",
     "service-worker.js": "/react-training-2019-08/service-worker.js",
     "static/css/2.22a7d4ef.chunk.css.map": "/react-training-2019-08/static/css/2.22a7d4ef.chunk.css.map",
-    "static/css/main.4826d561.chunk.css.map": "/react-training-2019-08/static/css/main.4826d561.chunk.css.map"
+    "static/css/main.3f85cf3e.chunk.css.map": "/react-training-2019-08/static/css/main.3f85cf3e.chunk.css.map"
   }
 }
