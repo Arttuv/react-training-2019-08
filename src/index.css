@@ -18,3 +18,11 @@ body {
   max-height: 90vh;
   max-width: 1000px; /* TODO: Fix responsive photo view. */
 }
+
+.react-images__positioner {
+  z-index: 2000 !important;
+}
+
+li.nav-item.active  {
+  font-weight: bold;
+}

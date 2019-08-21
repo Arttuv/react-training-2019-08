@@ -46,7 +46,7 @@ function TopNavbar(props) {
           
           {props.activePage==='photo' ? 
             <li className="nav-item active">
-                <a className="nav-link" href="#">Photo Details<span className="sr-only">(current)</span></a>
+                <a className="nav-link" href={window.location.href}>Photo Details<span className="sr-only">(current)</span></a>
             </li>
           : null}
         </ul>
