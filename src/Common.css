@@ -1,0 +1,12 @@
+#main-navigation {
+    background-color: white;
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075)!important;
+}
+  
+#main-navigation .navbar-brand {
+    color: #007bff;
+}
+
+#main-navigation .active-page-link {
+    text-decoration: underline;
+}
