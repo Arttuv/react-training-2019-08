@@ -49,7 +49,7 @@ function GlorifiedGallery(props) {
     useEffect(() => {
      const fetchPhotos = async() => {
       setFetchingData(true);
-      fetch('https://jsonplaceholder.typicode.com/photos/' + '?_page=' + page + '&limit=12')
+      fetch('https://jsonplaceholder.typicode.com/photos/?_page=' + page + '&limit=12')
       .then(response => {
         
         var links = responseLinkParse(response.headers.get('Link'));
