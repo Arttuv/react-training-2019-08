@@ -1,9 +1,17 @@
 body {
   padding-top: 4.5rem;
   margin: 0;
-  background-color: black;
+  background-color: white;
   height: 100%;
   width: 100%;
+}
+
+#main-navigation {
+  background-color: white;
+}
+
+.button-with-margin {
+  margin: 0.5em;
 }
 
 .photo-details {

@@ -26,7 +26,7 @@ function App() {
 function TopNavbar(props) {
   
   return (
-    <nav className="navbar navbar-expand navbar-dark fixed-top bg-dark">
+    <nav id="main-navigation" className="navbar navbar-expand fixed-top shadow-sm">
     <a className="navbar-brand" href="#">PhotoApp</a>
       
       <div>
@@ -128,13 +128,13 @@ const LightboxFooter = ({ currentView, modalProps }) => {
   return (
     <div className="container-fluid w-100 d-flex justify-content-center text-center">
     
-      <button type="button" className="btn btn btn-outline-primary align-middle" onClick={() => {
+      <button type="button" className="button-with-margin btn btn btn-outline-primary align-middle shadow-sm" onClick={() => {
         window.open(currentView.src)}}>
         <FaShareSquare />
       </button>
      
 
-      <Link to={"/photo/" + currentView.id} className="btn btn-outline-primary"><FaInfo/></Link>
+      <Link to={"/photo/" + currentView.id} className="btn button-with-margin btn-outline-primary shadow-sm"><FaInfo/></Link>
 
     </div>);
 }
@@ -257,11 +257,11 @@ function SimplePagination(props) {
         <div className="container-fluid w-100 d-flex justify-content-center">
           
           {props.pagination.hasOwnProperty('next') ? 
-            <button type="button" className="btn btn btn-outline-primary align-middle" onClick={props.nextPage}>
+            <button type="button" className="btn btn btn-outline-primary align-middle button-with-margin shadow-sm" onClick={props.nextPage}>
               <FaAngleDoubleDown />
             </button>
             :
-            <button type="button" className="btn btn btn-outline-primary disabled">
+            <button type="button" className="btn btn btn-outline-primary disabled button-with-margin shadow-sm">
               <FaAngleDoubleDown />
             </button>}
         </div>
