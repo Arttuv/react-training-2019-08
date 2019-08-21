@@ -3,7 +3,7 @@ import Gallery from "react-photo-gallery";
 import Carousel, { Modal, ModalGateway } from "react-images";
 import {FaAngleDoubleDown, FaShareSquare, FaInfo} from "react-icons/fa";
 import { Link } from "react-router-dom";
-import TopNavbar from "../Common";
+import TopNavbar from "../common/Common";
 
 const responseLinkParse = require('parse-link-header');
 

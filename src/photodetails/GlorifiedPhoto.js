@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import TopNavbar from "../Common";
+import TopNavbar from "../common/Common";
 
 /**
  * Component to show a single photo with detailed info. Should get the 
