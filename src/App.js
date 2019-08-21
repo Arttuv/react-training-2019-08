@@ -64,7 +64,7 @@ function TopNavbar(props) {
  */
 function GlorifiedPhoto(props) {
   const [photoDetails, setPhotoDetails] = useState(null);
-  
+  const [error, setError] = useState(null);
   /**
    * useEffect-hook for background data fetch.
    */
@@ -81,7 +81,10 @@ function GlorifiedPhoto(props) {
         newObject.title = data['title'];
         setPhotoDetails(newObject);
      })
-     .catch(error => console.error('Error:', error));
+     .catch(error => {
+       console.error('Error:', error);
+       setError(error);
+     });
    };
 
    getPhotoInfo();
@@ -91,9 +94,8 @@ function GlorifiedPhoto(props) {
   return (
       <div>
         <TopNavbar activePage="photo"/>
-        
         {photoDetails != null ? (
-
+          
           <main role="main" className="container photo-details">
             <div className="card mb-3">
               <div className="row no-gutters">
@@ -112,8 +114,14 @@ function GlorifiedPhoto(props) {
             </div>
 
           </main>
-
         ) : <h1>Loading...</h1>}
+        {error != null ? 
+          <div className="bg-danger">
+          < h2 class="bg-danger">Error: {error.name}</h2> 
+          <p>{error.message}</p>
+          </div>
+        : null}
+
       </div>
   );
 }
@@ -151,6 +159,7 @@ function GlorifiedGallery(props) {
   const [pagination, setPagination] = useState(null);
   const [page, setPage] = useState(1);
   const [fetchingData, setFetchingData] = useState(false);
+  const [error, setError] = useState(null);
 
   const openLightbox = useCallback((event, { photo, index }) => {
     setCurrentImage(index);
@@ -209,7 +218,12 @@ function GlorifiedGallery(props) {
         }
         setFetchingData(false);
     })
-    .catch(error => console.error('Error:', error));
+    .catch(error => {
+        console.error('Error:', error)
+        setError(error);
+    })
+      
+    
   };
 
   fetchPhotos();
@@ -221,6 +235,12 @@ function GlorifiedGallery(props) {
       <TopNavbar activePage='photos'/>
       <main role="main" className="container">
         {fetchedPhotos != null ? <Gallery photos={fetchedPhotos} direction={"row"} onClick={openLightbox} /> : <h1>Loading...</h1>}
+        {error != null ? 
+          <div className="bg-danger">
+          < h2 class="bg-danger">Error: {error.name}</h2> 
+          <p>{error.message}</p>
+          </div>
+        : null}
         <ModalGateway>
           {viewerIsOpen ? (
             <Modal onClose={closeLightbox}>
